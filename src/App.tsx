@@ -1,5 +1,7 @@
+import Dashboard from "./pages/Dashboard";
+
 function App() {
-	return <div className="ml-10 underline">Hello World</div>;
+	return <><Dashboard /></>;
 }
 
 export default App;
