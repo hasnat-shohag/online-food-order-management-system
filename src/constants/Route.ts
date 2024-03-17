@@ -4,9 +4,14 @@ export const routes = {
 		key: "signup",
 		path: "/auth/signup",
 	},
-  login: {
-    title: 'Login',
-    key: 'login',
-    path: '/auth/login',
-  },
+	login: {
+		title: "Login",
+		key: "login",
+		path: "/auth/login",
+	},
+	home: {
+		title: "Home",
+		key: "home",
+		path: "/",
+	},
 };
