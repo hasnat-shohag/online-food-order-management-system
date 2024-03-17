@@ -14,4 +14,9 @@ export const routes = {
 		key: "home",
 		path: "/",
 	},
+	notFound: {
+		title: "Page Not Found",
+		key: "page-not-found",
+		path: "*",
+	},
 };
