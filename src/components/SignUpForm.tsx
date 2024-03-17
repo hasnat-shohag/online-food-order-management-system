@@ -10,6 +10,7 @@ import InputField from "../elements/InputField";
 import { ISignupRequest } from "../models/Auth";
 import { getBaseUrl } from "../hooks/BaseUrl";
 import axios from "axios";
+import { routes } from "../constants/Route";
 
 const schema = yup.object().shape({
 	name: yup.string().required("Name is required"),
@@ -40,6 +41,7 @@ const schema = yup.object().shape({
 type FieldKeys = "name" | "email" | "password" | "confirmPassword";
 
 const SignUpForm: FC = () => {
+	const navigate = useNavigate();
 
 	const {
 		reset,
@@ -64,16 +66,14 @@ const SignUpForm: FC = () => {
 			toast.success("Registered successfully!");
 
 			reset();
-			// navigate(routes.login.path);
+			navigate(routes.login.path);
 		} catch (error) {
 			toast.error("Email is already taken. Please choose another email.");
 			console.log(error);
 		}
 	};
 
-	const onClickSignIn = () => {
-		// navigate(routes.login.path);
-	};
+	const onClickSignIn = () => navigate(routes.login.path);
 
 	return (
 		<div className="py-8 2xl:py-12">

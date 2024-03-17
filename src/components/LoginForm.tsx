@@ -3,10 +3,10 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FC } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-// import { useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 import { LOCAL_STORAGE_KEYS } from "../constants/Global";
-// import { routes } from "../constants/Route";
+import { routes } from "../constants/Route";
 import Button from "../elements/Button";
 import InputField from "../elements/InputField";
 import { ILoginRequest } from "../models/Auth";
@@ -21,7 +21,7 @@ const schema = yup.object().shape({
 type FieldKeys = "email" | "password";
 
 const LoginForm: FC = () => {
-	// const navigate = useNavigate();
+	const navigate = useNavigate();
 
 	const {
 		control,
@@ -48,15 +48,13 @@ const LoginForm: FC = () => {
 			setToStorage(LOCAL_STORAGE_KEYS.AUTH_ID, response.data.user.id);
 			setToStorage(LOCAL_STORAGE_KEYS.AUTH_EMAIL, response.data.user.email);
 			setToStorage(LOCAL_STORAGE_KEYS.AUTH_NAME, response.data.user.name);
-			// navigate(routes.home.path);
+			navigate(routes.home.path);
 		} catch (err) {
 			console.log(err);
 		}
 	};
 
-	const onClickSignUp = () => {
-    // navigate(routes.signup.path);
-  }
+	const onClickSignUp = () => navigate(routes.signup.path);
 
 	return (
 		<div>
