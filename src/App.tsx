@@ -1,7 +1,11 @@
-import Dashboard from "./pages/Dashboard";
+import SignUpForm from "./components/SignUpForm";
 
 function App() {
-	return <><Dashboard /></>;
+	return (
+		<>
+			<SignUpForm />
+		</>
+	);
 }
 
 export default App;

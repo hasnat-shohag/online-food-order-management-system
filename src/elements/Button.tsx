@@ -21,7 +21,7 @@ const Button: FC<ButtonProps> = (props: ButtonProps) => {
   }`;
 
   return (
-    <button type={buttonType} className={`flex items-center rounded-xl ${buttonColor} ${customClass}`} {...attributes}>
+    <button type={buttonType} className={`flex items-center rounded-xl py-3 ${buttonColor} ${customClass}`} {...attributes}>
       {icon && <span className={`${icon.iconCustomClass} mx-1`}>{icon.iconFile}</span>}
       {children}
     </button>
