@@ -4,6 +4,7 @@ import Banner from "../components/Banner";
 import FoodCard from "../components/FoodCard";
 import { FoodItems } from "../utils/food-items";
 
+
 const HomePage: FC = () => {
 	const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -32,12 +33,14 @@ const HomePage: FC = () => {
 					<div className="flex justify-center flex-wrap">
 						{filteredItems.map((item, index) => (
 							<FoodCard
+								id = {item.id}
 								key={index}
 								title={item.title}
 								price={item.price}
 								image={item.image}
 								category={item.category}
 								rating={item.rating}
+								amount={item.amount}
 								customStyle="w-[30%]"
 							/>
 						))}

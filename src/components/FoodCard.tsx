@@ -1,17 +1,51 @@
-import { FC } from "react";
+import { FC, useState } from "react";
+import Button from "../elements/Button";
+import Modal from "./Modal";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import CartItem from "./CartItem";
 
-interface FoodCardProps {
+export interface FoodCardProps {
+	id: number;
 	image: string;
 	title: string;
 	category: string;
 	price: number;
 	rating: number;
+	amount: number;
 	restaurant_name?: string;
 	customStyle?: string;
 }
 
 const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
-	const { title, image, category, price, rating, customStyle } = props;
+	const { id, title, image, category, price, rating, amount, customStyle } =
+		props;
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	const navigate = useNavigate();
+
+	// const isAuthenticated = localStorage.getItem("auth_token") !== null;
+	const isAuthenticated = true;
+
+	const handleOpenModal = () => {
+		if (isAuthenticated) {
+			setIsModalOpen(true);
+		} else {
+			navigate("/auth/login");
+		}
+	};
+
+	const handleAvailablity = (amount: number) => {
+		if (amount > 0) {
+			handleOpenModal();
+		} else {
+			toast.warn("Out of stock");
+		}
+	};
+
+	const handleCloseModal = () => {
+		// console.log("Clicked");
+		setIsModalOpen(!isModalOpen);
+	};
 
 	return (
 		<div className={`ring-1 p-5 rounded-lg m-5 ${customStyle}`}>
@@ -27,14 +61,23 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 				<p className="text-base">{category}</p>
 				<div className="flex justify-between">
 					<p className="text-gray-700">{price.toFixed(2)} tk</p>
+					<p>Available Amount: {amount}</p>
 					<p className="text-sm ">
 						<span className="">☆</span> {rating}
 					</p>
 				</div>
 			</div>
-			<button className="bg-gray-700 text-white px-5 py-2 rounded-md">
+			<Button
+				buttonVariant="secondary"
+				customClass="px-5 mt-2 text-black hover:bg-gray-200"
+				// onClick={handleOpenModal}
+				onClick={() => handleAvailablity(amount)}
+			>
 				Add to Cart
-			</button>
+			</Button>
+			<Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+				<CartItem amount={amount} id={id} title={title} price={price} />
+			</Modal>
 		</div>
 	);
 };
