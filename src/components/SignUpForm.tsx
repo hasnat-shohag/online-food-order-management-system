@@ -13,7 +13,7 @@ import axios from "axios";
 import { routes } from "../constants/Route";
 
 const schema = yup.object().shape({
-	name: yup.string().required("Name is required"),
+	username: yup.string().required("Name is required"),
 	email: yup.string().email().required("Email is required"),
 	password: yup
 		.string()
@@ -32,13 +32,11 @@ const schema = yup.object().shape({
 			value ? /[^\w\d\s:]/.test(value) : false
 		)
 		.required("Password is required"),
-	confirmPassword: yup
-		.string()
-		.oneOf([yup.ref("password")], "Password did not match")
-		.required("Password did not match"),
+	first_name: yup.string().required(),
+	last_name: yup.string().required(),
 });
 
-type FieldKeys = "name" | "email" | "password" | "confirmPassword";
+type FieldKeys = "username" | "email" | "password" | "first_name" | "last_name";
 
 const SignUpForm: FC = () => {
 	const navigate = useNavigate();
@@ -51,16 +49,17 @@ const SignUpForm: FC = () => {
 	} = useForm<ISignupRequest>({
 		resolver: yupResolver(schema),
 		defaultValues: {
-			name: "",
+			username: "",
 			email: "",
 			password: "",
-			confirmPassword: "",
+			first_name: "",
+			last_name: "",
 		},
 	});
 
 	const onSubmit: SubmitHandler<ISignupRequest> = async (payload) => {
 		try {
-			const url = getBaseUrl() + "signup";
+			const url = getBaseUrl() + "/auth/users/";
 			await axios.post(url, payload);
 
 			toast.success("Registered successfully!");
@@ -105,17 +104,22 @@ const SignUpForm: FC = () => {
 					onSubmit={handleSubmit(onSubmit)}
 				>
 					{[
-						{ name: "name", key: "name", placeholder: "Full Name" },
+						{ name: "username", key: "username", placeholder: "Username" },
 						{ name: "Email", key: "email", placeholder: "Email" },
+						{
+							name: "first_name",
+							key: "first_name",
+							placeholder: "First Name",
+						},
+						{
+							name: "last_name",
+							key: "last_name",
+							placeholder: "Last Name",
+						},
 						{
 							name: "Password",
 							key: "password",
-							placeholder: "New password",
-						},
-						{
-							name: "ConfirmPassword",
-							key: "confirmPassword",
-							placeholder: "Confirm Password",
+							placeholder: "Password",
 						},
 					].map((field) => (
 						<div key={field.key}>
@@ -149,7 +153,7 @@ const SignUpForm: FC = () => {
 
 					<Button
 						buttonType="submit"
-						customClass="flex justify-center item-center font-semibold text-base"
+						customClass="flex justify-center item-center font-semibold text-base bg-black"
 					>
 						Create Account
 					</Button>

@@ -5,7 +5,7 @@ import { routes } from "../constants/Route";
 import LoginPage from "../components/LoginForm";
 import SignupPage from "../components/SignUpForm";
 import BaseWrapper from "../components/Layout/BaseWrapper";
-import HomePage from "../pages/Dashboard";
+import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import PublicWrapper from "../components/Layout/PublicWrapper";
 

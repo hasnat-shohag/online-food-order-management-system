@@ -1,3 +1,3 @@
 export const getBaseUrl = () => {
-	return "http://localhost:8080/";
+	return "http://localhost:8000/";
 };

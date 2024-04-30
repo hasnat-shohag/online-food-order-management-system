@@ -11,7 +11,7 @@ export interface FoodCardProps {
 	title: string;
 	category: string;
 	price: number;
-	rating: number;
+	rating?: number;
 	amount: number;
 	restaurant_name?: string;
 	customStyle?: string;
@@ -23,8 +23,7 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const navigate = useNavigate();
 
-	// const isAuthenticated = localStorage.getItem("auth_token") !== null;
-	const isAuthenticated = true;
+	const isAuthenticated = localStorage.getItem("auth_token") !== null;
 
 	const handleOpenModal = () => {
 		if (isAuthenticated) {
@@ -60,7 +59,7 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 				<h3 className="text-3xl ">{title}</h3>
 				<p className="text-base">{category}</p>
 				<div className="flex justify-between">
-					<p className="text-gray-700">{price.toFixed(2)} tk</p>
+					<p className="text-gray-700">{price} tk</p>
 					<p>Available Amount: {amount}</p>
 					<p className="text-sm ">
 						<span className="">☆</span> {rating}
@@ -70,7 +69,6 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 			<Button
 				buttonVariant="secondary"
 				customClass="px-5 mt-2 text-black hover:bg-gray-200"
-				// onClick={handleOpenModal}
 				onClick={() => handleAvailablity(amount)}
 			>
 				Add to Cart

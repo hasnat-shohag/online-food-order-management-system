@@ -14,11 +14,11 @@ import { setToStorage } from "../utils/token";
 import { getBaseUrl } from "../hooks/BaseUrl";
 
 const schema = yup.object().shape({
-	email: yup.string().email().required(),
+	username: yup.string().required(),
 	password: yup.string().min(8).max(20).required(),
 });
 
-type FieldKeys = "email" | "password";
+type FieldKeys = "username" | "password";
 
 const LoginForm: FC = () => {
 	const navigate = useNavigate();
@@ -30,7 +30,7 @@ const LoginForm: FC = () => {
 	} = useForm<ILoginRequest>({
 		resolver: yupResolver<ILoginRequest>(schema),
 		defaultValues: {
-			email: "",
+			username: "",
 			password: "",
 		},
 	});
@@ -39,15 +39,11 @@ const LoginForm: FC = () => {
 		payload: ILoginRequest
 	) => {
 		try {
-			const url = getBaseUrl() + "/auth/login";
+			const url = getBaseUrl() + "/auth/jwt/create";
 			const response = await axios.post(url, payload);
-			setToStorage(
-				LOCAL_STORAGE_KEYS.AUTH_TOKEN,
-				response.data.user.accessToken
-			);
-			setToStorage(LOCAL_STORAGE_KEYS.AUTH_ID, response.data.user.id);
-			setToStorage(LOCAL_STORAGE_KEYS.AUTH_EMAIL, response.data.user.email);
-			setToStorage(LOCAL_STORAGE_KEYS.AUTH_NAME, response.data.user.name);
+			// console.log(response?.data?.access);
+
+			setToStorage(LOCAL_STORAGE_KEYS.AUTH_TOKEN, response?.data?.access);
 			navigate(routes.home.path);
 		} catch (err) {
 			console.log(err);
@@ -85,7 +81,7 @@ const LoginForm: FC = () => {
 						onSubmit={handleSubmit(onSubmit)}
 					>
 						{[
-							{ name: "Email", key: "email", placeholder: "Email" },
+							{ name: "username", key: "username", placeholder: "username" },
 							{ name: "Password", key: "password", placeholder: "Password" },
 						].map((field) => (
 							<div key={field.key}>

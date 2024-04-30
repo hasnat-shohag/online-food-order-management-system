@@ -5,13 +5,29 @@ export interface ISession {
 }
 
 export interface ISignupRequest {
-	name: string;
+	username: string;
 	email: string;
 	password: string;
-	confirmPassword: string;
+	first_name: string;
+	last_name: string;
 }
 
 export interface ILoginRequest {
-	email: string;
+	username: string;
 	password: string;
+}
+
+export interface IFoodItemsResponse {
+	id: number;
+	title: string;
+	description: string;
+	slug: string;
+	inventory: number;
+	unit_price: number;
+	price_with_tax: number;
+	collection: string;
+	images: {
+		id: number;
+		image: string;
+	};
 }
