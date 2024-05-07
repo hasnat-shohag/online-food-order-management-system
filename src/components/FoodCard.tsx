@@ -4,6 +4,7 @@ import Modal from "./Modal";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CartItem from "./CartItem";
+import "../assets/styles/FoodCard.css";
 
 export interface FoodCardProps {
 	id: number;
@@ -52,7 +53,7 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 				<img
 					src={image}
 					alt="image"
-					className="w-[100%] h-[100%] hover:w-[99%] rounded-lg"
+					className="w-[100%] h-[100%] hover-image rounded-lg"
 				/>
 			</div>
 			<div className="flex justify-center flex-col pt-4 rounded-md text-[#5B5B5B]">

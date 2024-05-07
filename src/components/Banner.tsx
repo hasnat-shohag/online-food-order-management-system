@@ -1,5 +1,6 @@
 import { FC } from "react";
 import bannerimage from "../assets/images/bannerimage.png";
+import "../assets/styles/Banner.css";
 
 const Banner: FC = () => {
 	return (
@@ -18,7 +19,7 @@ const Banner: FC = () => {
 			</div>
 			{/* right */}
 			<div className="w-[400px]">
-				<img src={bannerimage} alt="bannerimage" className="w-[100%]" />
+				<img src={bannerimage} alt="bannerimage" className="w-[100%] banner" />
 			</div>
 		</div>
 	);
