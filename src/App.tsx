@@ -1,5 +1,13 @@
+import { Suspense } from "react";
+import { RouterProvider } from "react-router-dom";
+import MainRoutes from "./routes/baseRoutes";
+
 function App() {
-	return <div className="ml-10 underline">Hello World</div>;
+	return (
+		<Suspense>
+			<RouterProvider router={MainRoutes} />
+		</Suspense>
+	);
 }
 
 export default App;
