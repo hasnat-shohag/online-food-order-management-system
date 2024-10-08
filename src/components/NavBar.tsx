@@ -8,6 +8,16 @@ const Navbar = () => {
 			key: "home",
 			path: "/",
 		},
+		{
+			title: "About",
+			key: "about",
+			path: "/about",
+		},
+		{
+			title: "My Cart",
+			key: "/cart",
+			path: "/cart",
+		},
 	];
 
 	const token = getAuthToken();
@@ -34,12 +44,12 @@ const Navbar = () => {
 					<ul className="flex gap-10">
 						{navItems.map((item) => (
 							<li key={item.key}>
-								<a href={item.path} className="text-white">
+								<a href={item.path} className="text-white font-bold">
 									{item.title}
 								</a>
 							</li>
 						))}
-						<li className="text-white">
+						<li className="text-white font-bold">
 							{token ? (
 								<a href="/" onClick={handleLogout}>
 									log out

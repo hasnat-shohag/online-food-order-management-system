@@ -44,6 +44,7 @@ const LoginForm: FC = () => {
 			// console.log(response?.data?.access);
 
 			setToStorage(LOCAL_STORAGE_KEYS.AUTH_TOKEN, response?.data?.access);
+			setToStorage(LOCAL_STORAGE_KEYS.AUTH_EMAIL, response?.data?.email);
 			navigate(routes.home.path);
 		} catch (err) {
 			console.log(err);

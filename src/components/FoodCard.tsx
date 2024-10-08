@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CartItem from "./CartItem";
 import "../assets/styles/FoodCard.css";
+import { boolean } from "yup";
+import axios from "axios";
 
 export interface FoodCardProps {
 	id: number;
@@ -22,6 +24,7 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 	const { id, title, image, category, price, rating, amount, customStyle } =
 		props;
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	const [quantity, setQuantity] = useState<number>(1);
 	const navigate = useNavigate();
 
 	const isAuthenticated = localStorage.getItem("auth_token") !== null;
@@ -44,7 +47,43 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 
 	const handleCloseModal = () => {
 		// console.log("Clicked");
+		const isCardIdAvailable = localStorage.getItem("cartId");
+		if (!isCardIdAvailable) {
+			axios
+				.post("http://127.0.0.1:8000/store/carts/")
+				.then((res) => {
+					// console.log("res data: ", res.data);
+					localStorage.setItem("cartId", res.data.id.toString());
+				})
+				.catch((error) => {
+					console.error("Error creating cart:", error);
+				});
+		}
+
+		setTimeout(() => {
+			const cartId = localStorage.getItem("cartId");
+			// console.log(cartId);
+			if (cartId) {
+				axios
+					.post(`http://127.0.0.1:8000/store/carts/${cartId}/items/`, {
+						product_id: id,
+						quantity: quantity,
+					})
+					.then((res) => {
+						console.log("res data: ", res.data);
+					})
+					.catch((error) => {
+						console.error("Error creating cart item:", error);
+					});
+			}
+		}, 100);
+
 		setIsModalOpen(!isModalOpen);
+	};
+
+	const handleChangeQuantity = (quantity: number) => {
+		setQuantity(quantity);
+		console.log(quantity);
 	};
 
 	return (
@@ -75,7 +114,13 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 				Add to Cart
 			</Button>
 			<Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-				<CartItem amount={amount} id={id} title={title} price={price} />
+				<CartItem
+					amount={amount}
+					id={id}
+					title={title}
+					price={price}
+					onQuantityChange={handleChangeQuantity}
+				/>
 			</Modal>
 		</div>
 	);

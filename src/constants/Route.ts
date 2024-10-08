@@ -19,4 +19,14 @@ export const routes = {
 		key: "page-not-found",
 		path: "*",
 	},
+	myCart: {
+		title: "My Cart",
+		key: "my-cart",
+		path: "/cart",
+	},
+	about: {
+		title: "About",
+		key: "about",
+		path: "/about",
+	},
 };

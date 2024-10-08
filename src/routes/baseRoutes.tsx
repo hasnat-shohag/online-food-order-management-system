@@ -8,6 +8,8 @@ import BaseWrapper from "../components/Layout/BaseWrapper";
 import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import PublicWrapper from "../components/Layout/PublicWrapper";
+import MyCart from "../pages/MyCart";
+import About from "../pages/About";
 
 const MainRoutes = createBrowserRouter([
 	{
@@ -26,6 +28,10 @@ const MainRoutes = createBrowserRouter([
 				element: <HomePage />,
 			},
 			// rest of the public property
+			{
+				path: routes.about.path,
+				element: <About />,
+			},
 		],
 	},
 	{
@@ -45,6 +51,10 @@ const MainRoutes = createBrowserRouter([
 		element: <BaseWrapper />,
 		children: [
 			// rest of the private property
+			{
+				path: routes.myCart.path,
+				element: <MyCart />,
+			},
 		],
 	},
 ]);

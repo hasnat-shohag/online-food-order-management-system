@@ -49,7 +49,7 @@ const HomePage: FC = () => {
 
 	return (
 		<div>
-			<div>
+			<div className="min-h-dvh">
 				<Navbar />
 				<Banner />
 				<div className="my-10">
@@ -75,9 +75,16 @@ const HomePage: FC = () => {
 								category={item.collection}
 								amount={item.inventory}
 								price={item.unit_price}
-								image={item.images[0].image}
+								image={item.images[0]?.image}
 							/>
 						))}
+						{filteredItems?.length === 0 && (
+							<div>
+								<h1 className="text-2xl font-bold text-center mt-10">
+									No items found!
+								</h1>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

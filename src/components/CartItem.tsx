@@ -6,10 +6,11 @@ interface CartItemProps {
 	title: string;
 	amount: number;
 	price: number;
+	onQuantityChange: (quantity: number) => void;
 }
 
 const CartItem: FC<CartItemProps> = (props: CartItemProps) => {
-	const { id, title, price, amount } = props;
+	const { id, title, price, amount, onQuantityChange } = props;
 	const [quantity, setQuantity] = useState<number>(1);
 	const [totalCost, setTotalCost] = useState<number>(quantity * price);
 
@@ -23,6 +24,7 @@ const CartItem: FC<CartItemProps> = (props: CartItemProps) => {
 
 	useEffect(() => {
 		setTotalCost(quantity * price);
+		onQuantityChange(quantity);
 		console.log("firstRender");
 	}, [quantity]);
 
