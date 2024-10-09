@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import CartItem from "./CartItem";
 import ProductDetails from "./ProductDetails";
 import axios from "axios";
+import "../assets/styles/Banner.css";
 
 export interface FoodCardProps {
 	id: number;
@@ -114,7 +115,7 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 				<img
 					src={image}
 					alt="image"
-					className="w-full h-full object-cover rounded-lg"
+					className="w-full h-full object-cover rounded-lg banner"
 				/>
 			</div>
 			<div className="flex flex-col pt-4 text-gray-700">
