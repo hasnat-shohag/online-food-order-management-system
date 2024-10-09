@@ -62,86 +62,128 @@ const HomePage: FC = () => {
 			? foodItems
 			: foodItems.filter((item) => item?.collection === selectedCategory);
 
+	// Split items into discounted and non-discounted
+	const discountedItems = filteredItems.filter((item) => {
+		const discount = item.promotions?.[0]?.discount || 0;
+		return discount > 0;
+	});
+
+	const nonDiscountedItems = filteredItems.filter((item) => {
+		const discount = item.promotions?.[0]?.discount || 0;
+		return discount === 0;
+	});
+
 	// Sort items based on selected sort order
-	const sortedItems = [...filteredItems];
-	if (sortOrder === "lowToHigh") {
-		sortedItems.sort((a, b) => a.unit_price - b.unit_price);
-	} else if (sortOrder === "highToLow") {
-		sortedItems.sort((a, b) => b.unit_price - a.unit_price);
-	}
+	const sortItems = (items: IFoodItemsResponse[]) => {
+		const sortedItems = [...items];
+		if (sortOrder === "lowToHigh") {
+			sortedItems.sort((a, b) => a.unit_price - b.unit_price);
+		} else if (sortOrder === "highToLow") {
+			sortedItems.sort((a, b) => b.unit_price - a.unit_price);
+		}
+		return sortedItems;
+	};
+
+	const sortedDiscountedItems = sortItems(discountedItems);
+	const sortedNonDiscountedItems = sortItems(nonDiscountedItems);
 
 	return (
 		<div>
-			<div className="min-h-dvh">
+			<div className="min-h-screen">
 				<Navbar />
 				<Banner />
-				<div className="my-10">
+				<div className="my-10 px-4">
 					<h1 className="text-4xl font-bold text-center mb-5">Products List</h1>
-					<div className="flex flex-wrap items-center justify-start ml-20 mb-5">
-						{/* Filters Container */}
-						<div className="flex justify-between w-full pl-14 pr-32">
-							{/* Category Filter */}
-							<div className="w-64 mr-5">
-								<label
-									htmlFor="category-select"
-									className="block text-gray-700 font-medium mb-2"
-								>
-									Filter by Category
-								</label>
-								<Select
-									inputId="category-select"
-									options={categoryOptions}
-									defaultValue={categoryOptions[0]}
-									onChange={(selectedOption) =>
-										setSelectedCategory(selectedOption?.value || "All")
-									}
-									isSearchable
-									placeholder="Select Category"
-								/>
-							</div>
-							{/* Sort Filter */}
-							<div className="w-64">
-								<label
-									htmlFor="sort-select"
-									className="block text-gray-700 font-medium mb-2"
-								>
-									Sort by Price
-								</label>
-								<Select
-									inputId="sort-select"
-									options={sortOptions}
-									defaultValue={sortOptions[0]}
-									onChange={(selectedOption) =>
-										setSortOrder(selectedOption?.value || "default")
-									}
-									isSearchable
-									placeholder="Select Sorting"
-								/>
-							</div>
+
+					{/* Filters Container */}
+					<div className="flex flex-wrap items-center justify-end gap-16 mr-10">
+						{/* Category Filter */}
+						<div className="w-64">
+							<label
+								htmlFor="category-select"
+								className="block text-gray-700 font-medium mb-2"
+							>
+								Filter by Category
+							</label>
+							<Select
+								inputId="category-select"
+								options={categoryOptions}
+								defaultValue={categoryOptions[0]}
+								onChange={(selectedOption) =>
+									setSelectedCategory(selectedOption?.value || "All")
+								}
+								isSearchable
+								placeholder="Select Category"
+							/>
+						</div>
+						{/* Sort Filter */}
+						<div className="w-64">
+							<label
+								htmlFor="sort-select"
+								className="block text-gray-700 font-medium mb-2"
+							>
+								Sort by Price
+							</label>
+							<Select
+								inputId="sort-select"
+								options={sortOptions}
+								defaultValue={sortOptions[0]}
+								onChange={(selectedOption) =>
+									setSortOrder(selectedOption?.value || "default")
+								}
+								isSearchable
+								placeholder="Select Sorting"
+							/>
 						</div>
 					</div>
 
-					<div className="flex justify-center flex-wrap">
-						{sortedItems.length > 0 ? (
-							sortedItems.map((item, index) => (
-								<FoodCard
-									key={index}
-									id={item?.id}
-									title={item?.title}
-									category={item?.collection}
-									amount={item?.inventory}
-									price={item?.unit_price}
-									image={item?.images[0]?.image}
-									details={item?.description}
-								/>
-							))
-						) : (
-							<div>
-								<h1 className="text-2xl font-bold text-center mt-10">
-									No items found!
-								</h1>
-							</div>
-						)}
+					<div className="flex flex-col lg:flex-row">
+						{/* Left Sidebar for Discounted Items */}
+						<div className="lg:w-1/4 w-full p-4">
+							<h2 className="text-2xl font-bold mb-4">Discounted Products</h2>
+							{sortedDiscountedItems.length > 0 ? (
+								<div className="space-y-4">
+									{sortedDiscountedItems.map((item) => (
+										<FoodCard
+											key={item.id}
+											id={item.id}
+											title={item.title}
+											category={item.collection}
+											amount={item.inventory}
+											price={item.unit_price}
+											image={item.images[0]?.image}
+											details={item.description}
+											promotions={item.promotions}
+										/>
+									))}
+								</div>
+							) : (
+								<p>No discounted items found.</p>
+							)}
+						</div>
+						{/* Main Content for Non-Discounted Items */}
+						<div className="lg:w-3/4 w-full p-4">
+							<h2 className="text-2xl font-bold mb-4">Products</h2>
+							{sortedNonDiscountedItems.length > 0 ? (
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+									{sortedNonDiscountedItems.map((item) => (
+										<FoodCard
+											key={item.id}
+											id={item.id}
+											title={item.title}
+											category={item.collection}
+											amount={item.inventory}
+											price={item.unit_price}
+											image={item.images[0]?.image}
+											details={item.description}
+											promotions={item.promotions}
+										/>
+									))}
+								</div>
+							) : (
+								<p>No items found.</p>
+							)}
+						</div>
 					</div>
 				</div>
 			</div>

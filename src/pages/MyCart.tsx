@@ -94,12 +94,12 @@ const MyCart: React.FC = () => {
 										</div>
 										<div className="flex items-center">
 											<p className="text-lg font-semibold mr-4">
-												${item.total_price.toFixed(2)}
+                      ৳ {item.total_price.toFixed(2)}
 											</p>
 										</div>
 										<button
 											onClick={() => handleDeleteItem(item.id)}
-											className="text-red-500 hover:text-red-700"
+											className="text-white hover:text-gray-700 bg-blue-400 font-bold p-2 rounded-md"
 										>
 											Delete
 										</button>
@@ -108,7 +108,7 @@ const MyCart: React.FC = () => {
 								<div className="flex items-center justify-between mt-6">
 									<h3 className="text-xl font-bold">Total:</h3>
 									<p className="text-xl font-bold pl-24">
-										${cartData.total_price.toFixed(2)}
+										৳ {cartData.total_price.toFixed(2)}
 									</p>
 									<Button className="bg-green-500 p-2 rounded-md hover:bg-green-600 text-white font-semibold">
 										Place Order
