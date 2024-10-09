@@ -4,9 +4,15 @@ interface ModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	children: React.ReactNode;
+	closeButton?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({
+	isOpen,
+	onClose,
+	children,
+	closeButton = "Okay",
+}) => {
 	if (!isOpen) {
 		return null;
 	}
@@ -33,7 +39,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 							className="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
 							onClick={onClose}
 						>
-							Okay
+							{closeButton}
 						</button>
 					</div>
 				</div>

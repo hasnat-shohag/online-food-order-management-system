@@ -6,17 +6,18 @@ import axios from "axios";
 import { getBaseUrl } from "../hooks/BaseUrl";
 import { getAuthToken } from "../utils/token";
 import { IFoodItemsResponse } from "../models/Auth";
+import Select from "react-select";
 
 const HomePage: FC = () => {
 	const [selectedCategory, setSelectedCategory] = useState<string>("All");
-	const [foodItems, setFoodItems] = useState<IFoodItemsResponse>();
-
-	const [categories, setCategories] = useState(["All Items"]);
+	const [sortOrder, setSortOrder] = useState<string>("default");
+	const [foodItems, setFoodItems] = useState<IFoodItemsResponse[]>([]);
+	const [categories, setCategories] = useState<string[]>([]);
 
 	const authToken = getAuthToken();
 
 	useEffect(() => {
-		const response = async () => {
+		const fetchData = async () => {
 			try {
 				const url = getBaseUrl() + "/store/products";
 				const response = await axios.get(url, {
@@ -25,27 +26,49 @@ const HomePage: FC = () => {
 						Authorization: `Bearer ${authToken}`,
 					},
 				});
-				// console.log(response.data);
-				setFoodItems(response?.data);
-				const Categories = response.data.map(
-					(item: unknown) => item?.collection
+				setFoodItems(response.data);
+
+				// Extract unique categories from the data
+				const categorySet = new Set(
+					response.data.map((item: any) => item?.collection)
 				);
-				setCategories(Categories);
-				console.log(categories);
+				setCategories(Array.from(categorySet));
 			} catch (error) {
 				console.log(error);
 			}
 		};
-		response();
+		fetchData();
 	}, []);
 
-	const uniqueCategories = [...new Set(categories)];
-	console.log(uniqueCategories);
+	// Options for category filter
+	const categoryOptions = [
+		{ value: "All", label: "All Items" },
+		...categories.map((category) => ({
+			value: category,
+			label: category,
+		})),
+	];
 
+	// Options for sort filter
+	const sortOptions = [
+		{ value: "default", label: "Default" },
+		{ value: "lowToHigh", label: "Price: Low to High" },
+		{ value: "highToLow", label: "Price: High to Low" },
+	];
+
+	// Filter items based on selected category
 	const filteredItems =
 		selectedCategory === "All"
 			? foodItems
-			: foodItems.filter((item) => item.collection === selectedCategory);
+			: foodItems.filter((item) => item?.collection === selectedCategory);
+
+	// Sort items based on selected sort order
+	const sortedItems = [...filteredItems];
+	if (sortOrder === "lowToHigh") {
+		sortedItems.sort((a, b) => a.unit_price - b.unit_price);
+	} else if (sortOrder === "highToLow") {
+		sortedItems.sort((a, b) => b.unit_price - a.unit_price);
+	}
 
 	return (
 		<div>
@@ -54,31 +77,65 @@ const HomePage: FC = () => {
 				<Banner />
 				<div className="my-10">
 					<h1 className="text-4xl font-bold text-center mb-5">Products List</h1>
-					<select
-						className="ml-8 px-5 py-3 rounded-sm outline-none"
-						onChange={(e) => setSelectedCategory(e.target.value)}
-					>
-						<option value="All">All Items</option>
-						{uniqueCategories.map((category, index) => (
-							<option key={index} value={category}>
-								{category}
-							</option>
-						))}
-					</select>
+					<div className="flex flex-wrap items-center justify-start ml-20 mb-5">
+						{/* Filters Container */}
+						<div className="flex justify-between w-full pl-14 pr-32">
+							{/* Category Filter */}
+							<div className="w-64 mr-5">
+								<label
+									htmlFor="category-select"
+									className="block text-gray-700 font-medium mb-2"
+								>
+									Filter by Category
+								</label>
+								<Select
+									inputId="category-select"
+									options={categoryOptions}
+									defaultValue={categoryOptions[0]}
+									onChange={(selectedOption) =>
+										setSelectedCategory(selectedOption?.value || "All")
+									}
+									isSearchable
+									placeholder="Select Category"
+								/>
+							</div>
+							{/* Sort Filter */}
+							<div className="w-64">
+								<label
+									htmlFor="sort-select"
+									className="block text-gray-700 font-medium mb-2"
+								>
+									Sort by Price
+								</label>
+								<Select
+									inputId="sort-select"
+									options={sortOptions}
+									defaultValue={sortOptions[0]}
+									onChange={(selectedOption) =>
+										setSortOrder(selectedOption?.value || "default")
+									}
+									isSearchable
+									placeholder="Select Sorting"
+								/>
+							</div>
+						</div>
+					</div>
 
 					<div className="flex justify-center flex-wrap">
-						{filteredItems?.map((item, index) => (
-							<FoodCard
-								key={index}
-								id={item.id}
-								title={item.title}
-								category={item.collection}
-								amount={item.inventory}
-								price={item.unit_price}
-								image={item.images[0]?.image}
-							/>
-						))}
-						{filteredItems?.length === 0 && (
+						{sortedItems.length > 0 ? (
+							sortedItems.map((item, index) => (
+								<FoodCard
+									key={index}
+									id={item?.id}
+									title={item?.title}
+									category={item?.collection}
+									amount={item?.inventory}
+									price={item?.unit_price}
+									image={item?.images[0]?.image}
+									details={item?.description}
+								/>
+							))
+						) : (
 							<div>
 								<h1 className="text-2xl font-bold text-center mt-10">
 									No items found!

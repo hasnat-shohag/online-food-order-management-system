@@ -4,8 +4,8 @@ import Modal from "./Modal";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CartItem from "./CartItem";
+import ProductDetails from "./ProductDetails";
 import "../assets/styles/FoodCard.css";
-import { boolean } from "yup";
 import axios from "axios";
 
 export interface FoodCardProps {
@@ -16,16 +16,28 @@ export interface FoodCardProps {
 	price: number;
 	rating?: number;
 	amount: number;
+	details?: string;
 	restaurant_name?: string;
 	customStyle?: string;
 }
 
 const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
-	const { id, title, image, category, price, rating, amount, customStyle } =
-		props;
+	const {
+		id,
+		title,
+		image,
+		category,
+		price,
+		rating,
+		amount,
+		customStyle,
+		details,
+	} = props;
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
 	const [quantity, setQuantity] = useState<number>(1);
 	const navigate = useNavigate();
+	// console.log(details);
 
 	const isAuthenticated = localStorage.getItem("auth_token") !== null;
 
@@ -46,13 +58,11 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 	};
 
 	const handleCloseModal = () => {
-		// console.log("Clicked");
 		const isCardIdAvailable = localStorage.getItem("cartId");
 		if (!isCardIdAvailable) {
 			axios
 				.post("http://127.0.0.1:8000/store/carts/")
 				.then((res) => {
-					// console.log("res data: ", res.data);
 					localStorage.setItem("cartId", res.data.id.toString());
 				})
 				.catch((error) => {
@@ -62,7 +72,6 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 
 		setTimeout(() => {
 			const cartId = localStorage.getItem("cartId");
-			// console.log(cartId);
 			if (cartId) {
 				axios
 					.post(`http://127.0.0.1:8000/store/carts/${cartId}/items/`, {
@@ -86,8 +95,16 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 		console.log(quantity);
 	};
 
+	const handleOpenDetailsModal = () => {
+		setIsDetailsModalOpen(true);
+	};
+
+	const handleCloseDetailsModal = () => {
+		setIsDetailsModalOpen(false);
+	};
+
 	return (
-		<div className={`ring-1 p-5 rounded-lg m-5 ${customStyle}`}>
+		<div className={`ring-1 p-5 rounded-lg m-5 ${customStyle} w-[20%]`}>
 			<div className="w-[100%] h-[300px] flex justify-center">
 				<img
 					src={image}
@@ -106,13 +123,22 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 					</p>
 				</div>
 			</div>
-			<Button
-				buttonVariant="secondary"
-				customClass="px-5 mt-2 text-black hover:bg-gray-200"
-				onClick={() => handleAvailablity(amount)}
-			>
-				Add to Cart
-			</Button>
+			<div className="flex justify-between font-semibold mt-2">
+				<Button
+					buttonVariant="secondary"
+					customClass="px-5 mt-2 text-black hover:bg-gray-200"
+					onClick={() => handleAvailablity(amount)}
+				>
+					Add to Cart
+				</Button>
+				<Button
+					customClass="px-5 mt-2 text-black hover:bg-gray-200"
+					buttonVariant="secondary"
+					onClick={handleOpenDetailsModal}
+				>
+					See Details
+				</Button>
+			</div>
 			<Modal isOpen={isModalOpen} onClose={handleCloseModal}>
 				<CartItem
 					amount={amount}
@@ -120,6 +146,22 @@ const FoodCard: FC<FoodCardProps> = (props: FoodCardProps) => {
 					title={title}
 					price={price}
 					onQuantityChange={handleChangeQuantity}
+				/>
+			</Modal>
+			<Modal
+				isOpen={isDetailsModalOpen}
+				onClose={handleCloseDetailsModal}
+				closeButton="Close"
+			>
+				<ProductDetails
+					id={id}
+					image={image}
+					title={title}
+					category={category}
+					price={price}
+					rating={rating}
+					amount={amount}
+					details={details}
 				/>
 			</Modal>
 		</div>
